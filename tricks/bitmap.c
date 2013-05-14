@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define MAX 8972654
+#define MAX 8972654 //随便设定的数
 #define SHIFT 5
 int bitmap[1 + MAX/32];
 
