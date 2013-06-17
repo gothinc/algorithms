@@ -19,15 +19,15 @@ typedef	struct read_black_tree{
 	int   red_count;
 } rbtree;
 
-void print_tree(rbtree *tree);
+void print_tree(tnode *node);
 void init_tree(rbtree *tree);
 
 int
 main(int argc, char *argv[]){
-	rbtree tree;	
+	rbtree tree;
 	init_tree(&tree);
 	insert_plenty(&tree);
-	print_tree(&tree);
+	print_tree(tree.head);
 }
 
 int
@@ -45,7 +45,7 @@ insert(rbtree *tree, int key){
 
 	while(*head){
 		pre = *head;
-		*head = ((*head)->key >= key) ? (*head)->left : (*head)->right;
+		head = ((*head)->key >= key) ? &(*head)->left : &(*head)->right;
 	}
 
 	(*head) = malloc(sizeof(tnode));
@@ -57,11 +57,11 @@ insert(rbtree *tree, int key){
 }
 
 void
-print_tree(rbtree *tree){
-	tnode *node = tree->head;
-	int i;
-	while(node && i ++ < 10){
+print_tree(tnode *node){
+	if(node){
+		print_tree(node->left);
 		printf("%d\n", node->key);
+		print_tree(node->right);
 	}
 }
 
