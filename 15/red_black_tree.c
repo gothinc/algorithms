@@ -40,6 +40,38 @@ insert_plenty(rbtree *tree){
 	}
 }
 
+void
+leftRotate(rbtree *tree, tnode *node){
+	if(node == NIL || node->right == NIL) return;
+
+	node->right->p = node->p;
+	if(node->p->right == node){
+		node->p->right = node->right;
+	}else{
+		node->p->left = node->right;
+	}
+
+	node->p = node->right;
+	node->right->left = node;
+	node->right = node->right->left;
+}
+
+void
+rightRotate(rbtree *tree, tnode *node){
+	if(node == NIL || node->left == NIL) return;
+
+	node->left->p = node->p;
+	if(node->p->right == node){
+		node->p->right = node->left;
+	}else{
+		node->p->left = node->left;
+	}
+
+	node->p = node->left;
+	node->left->rigth = node;
+	node->left = node->left->right;
+}
+
 int
 insert(rbtree *tree, int key){
 	tnode **head = &tree->head;
