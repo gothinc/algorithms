@@ -42,7 +42,7 @@ insert_plenty(rbtree *tree){
 
 void
 leftRotate(rbtree *tree, tnode *node){
-	if(node == NIL || node->right == NIL) return;
+	if(memcmp(*node, NIL) == 0 || memcmp(*node->right, NIL)) return;
 
 	node->right->p = node->p;
 	if(node->p->right == node){
@@ -58,7 +58,7 @@ leftRotate(rbtree *tree, tnode *node){
 
 void
 rightRotate(rbtree *tree, tnode *node){
-	if(node == NIL || node->left == NIL) return;
+	if(memcmp(*node, NIL) == 0 || memcmp(*node->left, NIL)) return;
 
 	node->left->p = node->p;
 	if(node->p->right == node){
@@ -68,14 +68,58 @@ rightRotate(rbtree *tree, tnode *node){
 	}
 
 	node->p = node->left;
-	node->left->rigth = node;
+	node->left->right = node;
 	node->left = node->left->right;
+}
+
+void
+fixup_tree(rbtree *tree, tnode *node){
+	if(tree->head->color == RED){
+		tree->head->color = BLACK;
+		return;
+	}
+
+	if(node->p->color == BLACK) return;
+
+	if(node->p->p->left == node->p){
+		if(node->p->p->right->color == BLACK){
+			if(node->p->left == node){
+				node->p->color = BLACK;
+				node->p->p->color = RED;
+				rightRotate(tree, node->p);
+			}else{
+				leftRotate(tree, node->p);
+				rightRotate(tree, node);
+			}
+		}else{
+			node->p->color = BLACK;
+			node->p->p->right->color = BLACK;
+			node->p->p->color = RED;
+			fixup_tree(tree, node->p->p);
+		}
+	}else{
+		if(node->p->p->left->color == BLACK){
+			if(node->p->right == node){
+				node->p->color = BLACK;
+				node->p->p->color = RED;
+				leftRotate(tree, node->p);
+			}else{
+				rightRotate(tree, node->p);
+				leftRotate(tree, node);
+			}
+		}else{
+			node->p->color = BLACK;
+			node->p->p->left->color = BLACK;
+			node->p->p->color = RED;
+			fixup_tree(tree, node->p->p);
+		}
+	}
 }
 
 int
 insert(rbtree *tree, int key){
 	tnode **head = &tree->head;
-	tnode *pre = NULL;
+	tnode *pre = &NIL;
 
 	while(*head){
 		pre = *head;
@@ -83,11 +127,13 @@ insert(rbtree *tree, int key){
 	}
 
 	(*head) = malloc(sizeof(tnode));
-	(*head)->left = NULL;
-	(*head)->right = NULL;
+	(*head)->left = &NIL;
+	(*head)->right = &NIL;
 	(*head)->key = key;
 	(*head)->color = RED;
 	(*head)->p = pre;
+
+	fixup_tree(tree, *head);
 }
 
 void
