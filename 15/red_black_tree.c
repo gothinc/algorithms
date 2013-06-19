@@ -114,7 +114,9 @@ fixup_tree(rbtree *tree, tnode *node){
 				rightRotate(tree, node->p->p);
 			}else{
 				leftRotate(tree, node->p);
-				rightRotate(tree, node);
+				node->p->color = BLACK;
+				node->p->p->color = RED;
+				rightRotate(tree, node->p->p);
 			}
 		}else{
 			node->p->color = BLACK;
@@ -130,7 +132,9 @@ fixup_tree(rbtree *tree, tnode *node){
 				leftRotate(tree, node->p->p);
 			}else{
 				rightRotate(tree, node->p);
-				leftRotate(tree, node);
+				node->p->color = BLACK;
+				node->p->p->color = RED;
+				leftRotate(tree, node->p->p);
 			}
 		}else{
 			node->p->color = BLACK;
