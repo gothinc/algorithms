@@ -1,39 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "rb.h"
 
-#define BLACK 1
-#define RED   0
-
-typedef struct tree_node{
-	struct tree_node *left;
-	struct tree_node *right;
-	struct tree_node *p;
-	int    color; //0:红　1:黑
-	int    key;
-} tnode;
-
-typedef	struct red_black_tree{
-	tnode *head;
-	int   black_count;
-	int   red_count;
-} rbtree;
-
-
-static int get_balck_height(rbtree *tree);
-static int get_height(tnode *node);
-static int insert(rbtree *tree, int key);
-static void print_tree(tnode *node);
-static void init_tree(rbtree *tree);
-static void leftRotate(rbtree *tree, tnode *node);
-static void rightRotate(rbtree *tree, tnode *node);
-static void fixup_tree(rbtree *tree, tnode *node);
+queue q;
 
 int
 main(int argc, char *argv[]){
 	rbtree tree;
+	init_queue(&q);
 	init_tree(&tree);
 	insert_plenty(&tree);
-	print_tree(tree.head);
+	print_tree_graph(tree.head);
 	printf("height:%d\n", get_height(tree.head));
 }
 
@@ -181,10 +158,54 @@ insert(rbtree *tree, int key){
 }
 
 static void
+print_tree_graph(tnode *node){
+	if(memcmp(*node, *NIL()) == 0) return;	
+	int lh, rh, i;
+	lh = rh = i = 0;
+
+	lh = get_height(node->left);
+	rh = get_height(node->right);
+
+	for(i = 0; i <= lh; i ++){
+		printf(" ");
+	}
+	printf("%d", node->key);
+	for(i = 0; i <= rh; i ++){
+		printf(" ");
+	}
+	printf("\n");
+
+	print_tree_graph(node->left);
+	print_tree_graph(node->right);
+}
+
+static void
+print_tree_graph_test(tnode *node){
+	if(memcmp(*node, *NIL()) == 0) return;
+	int lh, rh, i;
+	lh = rh = i = 0;
+
+	lh = get_height(node->left);
+	rh = get_height(node->right);
+
+	for(i = 0; i <= lh; i ++){
+		printf(" ");
+	}
+	printf("%d", node->key);
+	for(i = 0; i <= rh; i ++){
+		printf(" ");
+	}
+	printf("\n");
+
+	print_tree_graph(node->left);
+	print_tree_graph(node->right);
+}
+
+static void
 print_tree(tnode *node){
 	if(node && memcmp(*node, *NIL()) != 0){
+		printf("%d\n", node->key);
 		print_tree(node->left);
-		printf("%d:%d\n", node->key, node->color);
 		print_tree(node->right);
 	}
 }

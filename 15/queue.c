@@ -1,20 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-typedef struct queue_node{
-	struct queue_node *left;	
-	struct queue_node *right;
-	int key;
-} queue_node;
-
-typedef struct queue{
-	queue_node *head;
-	int count;
-} queue;
-
-void print_queue(queue_node *head);
-void queue_append(queue *q, int key);
-void init_queue(queue *q);
+#include "rb.h"
 
 /*int
 main(int argc, char *argv[]){
@@ -34,13 +20,13 @@ print_queue(queue_node *head){
 
 	queue_node *node = head->right;
 	while(node){
-		printf("%d\n", node->key);
+		printf("%d\n", node->key->key);
 		node = node->right;
 	}
 }
 
 void
-queue_append(queue *q, int key){
+queue_append(queue *q, tnode *key){
 	queue_node *node;
 	node = q->head;
 	if(node == NULL) return;
@@ -61,6 +47,6 @@ init_queue(queue *q){
 	q->head = malloc(sizeof(queue_node));
 	q->head->left = NULL;
 	q->head->right = NULL;
-	q->head->key = -1;
+	q->head->key = NULL;
 	q->count = 0;
 }
