@@ -42,5 +42,6 @@ typedef struct queue{
 void print_queue(queue_node *head);
 void queue_append(queue *q, tnode *key);
 void init_queue(queue *q);
+tnode * unshift(queue *q);
 
 #endif

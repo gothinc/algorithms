@@ -42,6 +42,15 @@ queue_append(queue *q, tnode *key){
 	q->count ++;
 }
 
+tnode *
+unshift(queue *q){
+	if(q == NULL || q->head == NULL || q->head->right == NULL) return NULL;
+	tnode *t;
+	t = q->head->right->key;
+	q->head->right = q->head->right->right;
+	return t;
+}
+
 void
 init_queue(queue *q){
 	q->head = malloc(sizeof(queue_node));
