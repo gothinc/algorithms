@@ -12,15 +12,21 @@ typedef struct tree_node{
 	int    key;
 } tnode;
 
-typedef	struct read_black_tree{
+typedef	struct red_black_tree{
 	tnode *head;
 	int   black_count;
 	int   red_count;
 } rbtree;
 
 
-void print_tree(tnode *node);
-void init_tree(rbtree *tree);
+static int get_balck_height(rbtree *tree);
+static int get_height(tnode *node);
+static int insert(rbtree *tree, int key);
+static void print_tree(tnode *node);
+static void init_tree(rbtree *tree);
+static void leftRotate(rbtree *tree, tnode *node);
+static void rightRotate(rbtree *tree, tnode *node);
+static void fixup_tree(rbtree *tree, tnode *node);
 
 int
 main(int argc, char *argv[]){
@@ -28,6 +34,7 @@ main(int argc, char *argv[]){
 	init_tree(&tree);
 	insert_plenty(&tree);
 	print_tree(tree.head);
+	printf("height:%d\n", get_height(tree.head));
 }
 
 tnode *
@@ -46,7 +53,7 @@ insert_plenty(rbtree *tree){
 	}
 }
 
-void
+static void
 leftRotate(rbtree *tree, tnode *node){
 	if(memcmp(*node, *NIL()) == 0 || memcmp(*node->right, *NIL()) == 0) return;
 
@@ -72,7 +79,7 @@ leftRotate(rbtree *tree, tnode *node){
 	}
 }
 
-void
+static void
 rightRotate(rbtree *tree, tnode *node){
 	if(memcmp(*node, *NIL()) == 0 || memcmp(*node->left, *NIL()) == 0) return;
 
@@ -97,10 +104,12 @@ rightRotate(rbtree *tree, tnode *node){
 	}
 }
 
-void
+static void
 fixup_tree(rbtree *tree, tnode *node){
 	if(tree->head->color == RED){
 		tree->head->color = BLACK;
+		tree->black_count ++;
+		tree->red_count --;
 		return;
 	}
 
@@ -122,6 +131,8 @@ fixup_tree(rbtree *tree, tnode *node){
 			node->p->color = BLACK;
 			node->p->p->right->color = BLACK;
 			node->p->p->color = RED;
+			tree->black_count ++;
+			tree->red_count --;
 			fixup_tree(tree, node->p->p);
 		}
 	}else{
@@ -140,6 +151,8 @@ fixup_tree(rbtree *tree, tnode *node){
 			node->p->color = BLACK;
 			node->p->p->left->color = BLACK;
 			node->p->p->color = RED;
+			tree->black_count ++;
+			tree->red_count --;
 			fixup_tree(tree, node->p->p);
 		}
 	}
@@ -147,7 +160,7 @@ fixup_tree(rbtree *tree, tnode *node){
 	tree->head->color = BLACK;
 }
 
-int
+static int
 insert(rbtree *tree, int key){
 	tnode **head = &tree->head;
 	tnode *pre = NIL();
@@ -162,31 +175,48 @@ insert(rbtree *tree, int key){
 	(*head)->key = key;
 	(*head)->color = RED;
 	(*head)->p = pre;
+	tree->red_count ++;
 
 	fixup_tree(tree, *head);
 }
 
-void
+static void
 print_tree(tnode *node){
 	if(node && memcmp(*node, *NIL()) != 0){
-		printf("%d:%d\n", node->key, node->color);
 		print_tree(node->left);
+		printf("%d:%d\n", node->key, node->color);
 		print_tree(node->right);
 	}
 }
 
-void
+static int
+get_height(tnode *node){
+	if(node->key == -1)
+		return 0;
+
+	int i, j;
+	i = j = 0;
+	i = get_height(node->left);
+	j = get_height(node->right);
+
+	return i > j ? i + 1 : j + 1;
+}
+
+static int
+get_balck_height(rbtree *tree){
+	tnode *node = tree->head;
+	int n = 0;
+	while(memcmp(*node, *NIL()) != 0){
+		node = node->left;
+		n ++;	
+	}
+
+	return n + 1;
+}
+
+static void
 init_tree(rbtree *tree){
 	tree->head = NIL();
 	tree->black_count = 0;
 	tree->red_count = 0;
-}
-
-void
-init_node(tnode *node){
-	node->left = node;
-	node->right = node;
-	node->p = node;
-	node->color = BLACK;
-	node->key = 0;
 }
