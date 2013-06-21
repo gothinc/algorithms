@@ -46,6 +46,7 @@ leftRotate(rbtree *tree, tnode *node){
 	node->p = node->right;
 	node->right->left = node;
 	node->right = t;
+	if(t && memcmp(*t, *NIL()) != 0) t->p = node;
 
 	if(memcmp(*node->p->p, *NIL()) == 0){
 		tree->head = node->p;
@@ -67,6 +68,7 @@ rightRotate(rbtree *tree, tnode *node){
 	node->p = node->left;
 	node->left->right = node;
 	node->left = t;
+	if(t && memcmp(*t, *NIL()) != 0) t->p = node;
 
 	if(memcmp(*node->p->p, *NIL()) == 0){
 		tree->head = node->p;
