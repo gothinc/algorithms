@@ -2,16 +2,18 @@
 #include <stdlib.h>
 #include "rb.h"
 
-queue q;
+queue *q;
 
 int
 main(int argc, char *argv[]){
 	rbtree tree;
-	init_queue(&q);
+	q = malloc(sizeof(queue));
+	init_queue(q);
 	init_tree(&tree);
 	insert_plenty(&tree);
-	print_tree_graph(tree.head);
-	printf("height:%d\n", get_height(tree.head));
+	//print_tree(tree.head);
+	//printf("height:%d\n", get_height(tree.head));
+	layer_traversal(tree.head);
 }
 
 tnode *
@@ -155,6 +157,20 @@ insert(rbtree *tree, int key){
 	tree->red_count ++;
 
 	fixup_tree(tree, *head);
+}
+
+static void
+layer_traversal(tnode *head){
+	if(head == NULL || memcmp(*head, *NIL()) == 0) return;
+
+	queue_append(q, head);
+	queue_node *t = q->head->right;
+	while(t && memcmp(*t->key, *NIL()) != 0){
+		printf("%d\n", t->key->key);
+		queue_append(q, t->key->left);	
+		queue_append(q, t->key->right);
+		t = t->right;
+	}
 }
 
 static void

@@ -18,6 +18,7 @@ typedef	struct red_black_tree{
 	int   red_count;
 } rbtree;
 
+tnode *NIL();
 static int get_balck_height(rbtree *tree);
 static int get_height(tnode *node);
 static int insert(rbtree *tree, int key);
@@ -27,6 +28,7 @@ static void leftRotate(rbtree *tree, tnode *node);
 static void rightRotate(rbtree *tree, tnode *node);
 static void fixup_tree(rbtree *tree, tnode *node);
 static void print_tree_graph(tnode *node);
+static void layer_traversal(tnode *node);
 
 typedef struct queue_node{
 	struct queue_node *left;	

@@ -27,6 +27,7 @@ print_queue(queue_node *head){
 
 void
 queue_append(queue *q, tnode *key){
+	if(key == NULL || memcmp(*key, *NIL()) == 0) return;
 	queue_node *node;
 	node = q->head;
 	if(node == NULL) return;
@@ -42,6 +43,7 @@ queue_append(queue *q, tnode *key){
 	q->count ++;
 }
 
+//get first node then delete
 tnode *
 unshift(queue *q){
 	if(q == NULL || q->head == NULL || q->head->right == NULL) return NULL;
