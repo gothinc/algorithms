@@ -12,7 +12,6 @@ main(int argc, char *argv[]){
 	init_tree(&tree);
 	insert_plenty(&tree);
 	//print_tree(tree.head);
-	//printf("height:%d\n", get_height(tree.head));
 	layer_traversal(tree.head);
 }
 
@@ -37,15 +36,10 @@ leftRotate(rbtree *tree, tnode *node){
 	if(memcmp(*node, *NIL()) == 0 || memcmp(*node->right, *NIL()) == 0) return;
 
 	tnode *t = node->right->left;
-
-	if(node == tree->head){
-		node->p->right = node->p->left = node->right;
+	if(node->p->right == node){
+		node->p->right = node->right;
 	}else{
-		if(node->p->right == node){
-			node->p->right = node->right;
-		}else{
-			node->p->left = node->right;
-		}
+		node->p->left = node->right;
 	}
 
 	node->right->p = node->p;
@@ -63,14 +57,10 @@ rightRotate(rbtree *tree, tnode *node){
 	if(memcmp(*node, *NIL()) == 0 || memcmp(*node->left, *NIL()) == 0) return;
 
 	tnode *t = node->left->right;
-	if(node == tree->head){
-		node->p->right = node->p->left = node->left;
+	if(node->p->right == node){
+		node->p->right = node->left;
 	}else{
-		if(node->p->right == node){
-			node->p->right = node->left;
-		}else{
-			node->p->left = node->left;
-		}
+		node->p->left = node->left;
 	}
 
 	node->left->p = node->p;
@@ -162,11 +152,25 @@ insert(rbtree *tree, int key){
 static void
 layer_traversal(tnode *head){
 	if(head == NULL || memcmp(*head, *NIL()) == 0) return;
+	int lh, rh, i;
 
 	queue_append(q, head);
 	queue_node *t = q->head->right;
 	while(t && memcmp(*t->key, *NIL()) != 0){
-		printf("%d\n", t->key->key);
+		lh = get_height(t->key->left);
+		rh = get_height(t->key->right);
+		for(i = 0; i <= lh; i ++){
+			printf("  ");
+		}
+		printf("%d", t->key->key);
+		for(i = 0; i <= rh; i ++){
+			printf("  ");
+		}
+
+		if(t->right == NULL || get_relative_height(head, t->key) != get_relative_height(head, t->right->key)) printf("\n");
+		//if(t->key->key == 1) printf("kobe:%d\n", get_relative_height(head, t->key));
+		//if(t->key->key == 5) printf("md:%d\n", get_relative_height(head, t->key));
+
 		queue_append(q, t->key->left);	
 		queue_append(q, t->key->right);
 		t = t->right;
@@ -176,28 +180,6 @@ layer_traversal(tnode *head){
 static void
 print_tree_graph(tnode *node){
 	if(memcmp(*node, *NIL()) == 0) return;	
-	int lh, rh, i;
-	lh = rh = i = 0;
-
-	lh = get_height(node->left);
-	rh = get_height(node->right);
-
-	for(i = 0; i <= lh; i ++){
-		printf(" ");
-	}
-	printf("%d", node->key);
-	for(i = 0; i <= rh; i ++){
-		printf(" ");
-	}
-	printf("\n");
-
-	print_tree_graph(node->left);
-	print_tree_graph(node->right);
-}
-
-static void
-print_tree_graph_test(tnode *node){
-	if(memcmp(*node, *NIL()) == 0) return;
 	int lh, rh, i;
 	lh = rh = i = 0;
 
@@ -232,11 +214,25 @@ get_height(tnode *node){
 		return 0;
 
 	int i, j;
-	i = j = 0;
 	i = get_height(node->left);
 	j = get_height(node->right);
 
 	return i > j ? i + 1 : j + 1;
+}
+
+static int
+get_relative_height(tnode *head, tnode *base){
+	if(base == NULL || memcmp(*base, *NIL()) == 0) return 0;	
+
+	int i = 0;
+	tnode *t = base;	
+
+	while(t && memcmp(*t, *NIL()) != 0){
+		i ++;
+		t = t->p;
+	}
+
+	return i;
 }
 
 static int
