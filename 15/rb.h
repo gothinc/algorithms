@@ -29,6 +29,7 @@ static void rightRotate(rbtree *tree, tnode *node);
 static void fixup_tree(rbtree *tree, tnode *node);
 static void print_tree_graph(tnode *node);
 static void layer_traversal(tnode *node);
+static int get_relative_height(tnode *head, tnode *base);
 
 typedef struct queue_node{
 	struct queue_node *left;	
