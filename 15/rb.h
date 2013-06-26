@@ -1,6 +1,10 @@
 #ifndef RB_HEAD
 #define RB_HEAD 1
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
 #define BLACK 1
 #define RED   0
 
@@ -30,6 +34,7 @@ static void fixup_tree(rbtree *tree, tnode *node);
 static void print_tree_graph(tnode *node);
 static void layer_traversal(tnode *node);
 static int get_relative_height(tnode *head, tnode *base);
+static int get_seq(tnode *node, tnode *bas, int *i, int x);
 
 typedef struct queue_node{
 	struct queue_node *left;	

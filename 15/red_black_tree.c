@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "rb.h"
 
 queue *q;
@@ -159,19 +157,21 @@ layer_traversal(tnode *head){
 	queue_append(q, head);
 	queue_node *t = q->head->right;
 	while(t && memcmp(*t->key, *NIL()) != 0){
-		lh = get_height(t->key->left);
-		rh = get_height(t->key->right);
-		for(i = 0; i <= lh; i ++){
-			printf("  ");
-		}
-		printf("%d", t->key->key);
-		for(i = 0; i <= rh; i ++){
-			printf("  ");
-		}
+        lh = rh = i = 0;
+        lh = get_seq(head, t->key, &i, rh);
+        if(t->left && t->left->key){
+            if(get_relative_height(head, t->left->key) == get_relative_height(head, t->key)){
+                i = 0;
+                lh -= get_seq(head, t->left->key, &i, rh);
+            }
+        }
 
-		if(t->right == NULL || get_relative_height(head, t->key) != get_relative_height(head, t->right->key)) printf("\n");
-		//if(t->key->key == 1) printf("kobe:%d\n", get_relative_height(head, t->key));
-		//if(t->key->key == 5) printf("md:%d\n", get_relative_height(head, t->key));
+        for(rh = 0; rh < lh; rh ++){
+            printf("\t");
+        }
+		printf("%d", t->key->key);
+
+		if(t->right == NULL || get_relative_height(head, t->key) != get_relative_height(head, t->right->key)) printf("\n\n");
 
 		queue_append(q, t->key->left);	
 		queue_append(q, t->key->right);
@@ -247,6 +247,19 @@ get_balck_height(rbtree *tree){
 	}
 
 	return n + 1;
+}
+
+static int
+get_seq(tnode *node, tnode *bas, int *i, int x){
+	if(node && memcmp(*node, *NIL()) != 0){
+		x = get_seq(node->left, bas, i, x);
+        if(node == bas) *i = 1;
+        if(*i == 1) return x;
+        x ++;
+		x = get_seq(node->right, bas, i, x);
+	}
+    
+    return x;
 }
 
 static void
