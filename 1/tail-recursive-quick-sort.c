@@ -21,10 +21,19 @@ quick_sort(int arr[], int start, int last){
 	
 	int mid;
 
-	mid = cal_mid(arr, start, last);	
-	
+	/*tail-recursive, 注:后经研究,这不是尾递归,请勿被误导,尾递归是指函数的最后一个操作是递归,所以可以覆盖当前栈,而非这样*/
+	while(start < last){
+		mid = cal_mid(arr, start, last);	
+
+		quick_sort(arr, start, mid - 1);
+		start = mid + 1;
+	}
+
+	/*common quick_sort*/
+	/*mid = cal_mid(arr, start, last);	
+
 	quick_sort(arr, start, mid - 1);
-	quick_sort(arr, mid + 1, last);
+	quick_sort(arr, mid + 1, last);*/
 }
 
 int
