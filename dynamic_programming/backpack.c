@@ -1,15 +1,21 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #define MAX 1000
 #define MAXV 10000
 
 int v[MAX], w[MAX];
 int d[MAX][MAXV];
+int s[MAX];
 
 int
 main(int argc, char *argv[]){
 	FILE *in, *out;
 	int n, volume, i, j;
+
+	memset(s, 0, sizeof(s));
+
 	in = freopen("in.txt", "r", stdin);
 	out = freopen("out.txt", "w", stdout);
 
@@ -30,7 +36,17 @@ main(int argc, char *argv[]){
 			}
 		}
 
-		printf("%d\n", d[n - 1][volume]);
+		for(j = volume, i = n - 1; i > 0; i --){
+			if(d[i][j] > d[i - 1][j]){
+				printf("volume:%d value:%d\n", v[i], w[i]);
+				j -= v[i];
+			}
+		}
+
+		if(d[i][j] == w[i]) printf("volume:%d value:%d\n", v[i], w[i]);
+
+		printf("count:%d\n", d[n - 1][volume]);
+		printf("-------------------\n");
 
 		scanf("");
 	}
