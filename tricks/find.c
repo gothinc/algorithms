@@ -19,18 +19,38 @@ void init_list(list *link);
 node *create_node();
 int find_spe(list *link, int p);
 int atoi_my(char *s);
+void reverse_list(list *link);
 
 int
 main(int argc, char *argv[]){
 	list l;	
 	create_list(&l, 10);
 
-	print_list(&l);
 	int i;
-	char *pos;
+	/*char *pos;
 	pos = argv[1];
 	i = find_spe(&l, atoi_my(pos));
-	printf("number:%d\n", i);
+	printf("number:%d\n", i);*/
+
+	reverse_list(&l);
+	print_list(&l);
+}
+
+void
+reverse_list(list *link){
+	node *pre = link->tail;
+	node *tmp;
+	node *cur = link->head->next;
+
+	while(cur != link->tail){
+		tmp = cur->next;
+
+		cur->next = pre;	
+		pre = cur;
+		cur = tmp;
+	}
+
+	link->head->next = pre;
 }
 
 int
